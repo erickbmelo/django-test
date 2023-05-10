@@ -1,0 +1,39 @@
+<form action="" method="post" id="form-container">
+    <h2>Responsável Familiar</h2>
+    {{ form_responsavel.as_p }}
+
+    <h2>Membros Familiares</h2>
+    {% csrf_token %}
+    {{ form_membro_familiar.management_form }}    
+    {% for fm in form_membro_familiar %}
+    <div class="membro-familiar-form">
+        {{ fm.as_p }}
+    </div>
+    {% endfor %}
+
+    <button id="add-form" type="button">Adicionar Membro Familiar</button>
+    <button type="submit">Salvar</button>    
+</form>
+
+<script>
+    let membroFamiliarForm = document.querySelectorAll(".membro-familiar-form")
+    let container = document.querySelector("#form-container")
+    let addButton = document.querySelector("#add-form")
+    let totalForms = document.querySelector("#id_membrofamiliar_set-TOTAL_FORMS")
+
+    let formNum = membroFamiliarForm.length-1
+    addButton.addEventListener('click', addForm)
+
+    function addForm(e){
+        e.preventDefault()
+
+        let newForm = membroFamiliarForm[0].cloneNode(true)
+        let formRegex = RegExp(`membrofamiliar_set-(\\d){1}-`,'g')
+
+        formNum++
+        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `membrofamiliar_set-${formNum}-`)
+        container.insertBefore(newForm, addButton)
+        
+        totalForms.setAttribute('value', `${formNum+1}`)
+    }
+</script>
